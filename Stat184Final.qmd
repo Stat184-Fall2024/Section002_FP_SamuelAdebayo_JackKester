@@ -1,0 +1,20 @@
+```{r}
+library(tidyverse) 
+library(rvest)
+
+#FruitsRaw <- read_csv('C:/Users/schor/OneDrive/Desktop/Stat184Final/Fruit-Prices-2022.csv')
+
+#boxplot(RetailPrice~Form, data = FruitsRaw)
+
+#price_fit <- aov(RetailPrice~Form, data = FruitsRaw)
+#summary(price_fit)
+
+#qqnorm(rstandard(price_fit))
+#qqline(rstandard(price_fit))
+
+DeathRateRaw <- read_csv('C:/Users/schor/OneDrive/Desktop/Stat184FinalProject/Stat184Final/Death_rates_for_suicide__by_sex__race__Hispanic_origin__and_age__United_States.csv')
+
+
+```
+
+
