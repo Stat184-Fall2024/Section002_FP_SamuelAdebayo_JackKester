@@ -1,11 +1,38 @@
+Research Question: 
+At 95% confidence is there a significant difference between the male estimated suicide rate and the estimated female suicide rate (Suicide rate is per hundred thousand within each gender)
+
+$$Contrast = \bar{y_{1*}} (Male) - \bar{y_{2*}}\ (Female)$$ 
+Question Response:
+
+
 ```{r}
 library(tidyverse) 
-library(rvest)
+library(RCurl)
+library(emmeans)
+
+sr <- read.csv(text = getURL("https://raw.githubusercontent.com/Stat184-Fall2024/Section002_FP_SamuelAdebayo_JackKester/refs/heads/main/Death_rates_for_suicide__by_sex__race__Hispanic_origin__and_age__United_States.csv"))
+
+sr_gender <- sr %>% 
+  filter(STUB_LABEL %in% c("Male", "Female")) %>%
+  filter(UNIT %in% c("Deaths per 100,000 resident population, crude")) %>%
+  select(STUB_LABEL, YEAR, ESTIMATE) %>%
+  rename(Gender = STUB_LABEL, Year = YEAR, Estimate = ESTIMATE)
+
+boxplot(Estimate~Gender, data = sr_gender)
 
 
-DeathRateRaw <- read_csv('C:/Users/schor/OneDrive/Desktop/Stat184Final/Section002_FP_SamuelAdebayo_JackKester/Death_rates_for_suicide__by_sex__race__Hispanic_origin__and_age__United_States.csv')
 
+s_fit <- aov(Estimate~Gender, data = sr_gender)
 
+k1 <- c(1,-1)
+
+s_em <- emmeans(s_fit, "Gender", data = sr_gender)
+
+lin_comb <- contrast(s_em, list(k1))
+confint(lin_comb, adjust = "none")
 ```
+
+At 95% confidence, because 0 is not within the confidence interval, we can conclude that there is a significant difference in suicide rates between men and women.
+
 
 
