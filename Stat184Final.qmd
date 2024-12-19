@@ -19,6 +19,7 @@ In this analysis, we will use a CSV file from data.gov to explore certain proper
 It is important to note that some of the vehicles on this list are hybrid vehicles, meaning that they run on both electricity and gas. This detail will come up later on in the text.
 
 ```{r}
+#| label: Initial/Tidy EV Dataset
 #Getting and tidying the electric vehicle data frame
 library(tidyverse) 
 library(RCurl)
@@ -44,6 +45,7 @@ Research Question Q1: Is there any significant difference in vehicle range acros
 To do this, I am simply going to make a histogram that shows each manufacturer along with their average range on their electric vehicles.
 
 ```{r}
+#| label: Getting The Make's Average Range
 #Getting the mean for every Make of EV
 #Load in Packages
 library(ggplot2)
@@ -100,6 +102,7 @@ RangeAvg <- MakeRange(Tesla_Range) %>%
 ```
 
 ```{r}
+#| label: Graph of Make's Average Range
 #| include: true
 #Now Create a Graph for This data
 ggplot(
@@ -139,6 +142,7 @@ As noted in the introduction there are hybrid vehicles in the data set, meaning 
 Research Questions: Q2: Is there a difference in average electric range between the Tesla models?
 
 ```{r}
+#| label: Tesla Model Boxplot, DotPlot and Q-Q Plot
 #| include: true
 tesla <- e_clean[e_clean$Make == "TESLA",]
 
