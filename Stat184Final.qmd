@@ -1,3 +1,9 @@
+---
+title: 'Exploring EV Data'
+author: Samuel Adebayo, Jack Kester
+output: pdf_document
+---
+
 ```{r}
 #Getting and tidying the electric vehicle data frame
 library(tidyverse) 
@@ -90,4 +96,3 @@ ggplot(
   theme_bw() +
   theme(legend.position = "bottom")
 ```
-
