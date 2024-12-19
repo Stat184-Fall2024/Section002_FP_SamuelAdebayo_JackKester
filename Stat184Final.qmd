@@ -80,7 +80,7 @@ ggplot(
   geom_col() +
   labs(
     x = 'Car Make',
-    y = 'Average Electric Range',
+    y = 'Average Electric Range (In Miles)',
     fill = 'Car Make',
     title = 'Average Electric Range by Car Make'
   ) +
