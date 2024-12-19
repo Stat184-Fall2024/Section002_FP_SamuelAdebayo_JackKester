@@ -96,3 +96,57 @@ ggplot(
   theme_bw() +
   theme(legend.position = "bottom")
 ```
+Research Questions:
+Q1: Is there a difference in average electric range between the Tesla models? 
+
+
+
+```{r}
+
+tesla <- e_clean[e_clean$Make == "TESLA",]
+
+boxplot(Electric.Range~Model, data = tesla)
+
+tesla_fit <- aov(Electric.Range~Model, data = tesla)
+
+summary(tesla_fit)
+
+plot(fitted(tesla_fit), rstandard(tesla_fit), 
+     xlab = "Fitted Values", ylab = "Standardized Residuals")
+
+qqnorm(rstandard(tesla_fit))
+qqline(rstandard(tesla_fit))
+
+
+
+```
+Research Questions:
+Is there a difference in average electric range between the Tesla models? 
+
+Response:
+
+Q1: Anova Hypothesis Test (At 5% sig level)
+(1) $H_0: \mu_1=\mu_2=\mu_3$
+$H_1: Some\ \mu_i \neq \mu_k$
+
+(2)
+```
+               Df   Sum Sq Mean Sq F value Pr(>F)    
+Model           4  6903021 1725755    1347 <2e-16 ***
+Residuals   25299 32408761    1281 
+```
+
+(3)
+Validate Assumptions
+Independence: Cars aren't randomly assigned Models because they are manufactured specifically as that model, however we can assume cars were randomly chosen to be tested so we can validate independence
+
+Normality: Normality tails off on the sides, however slightly follows a normal distribution
+
+Constant Variance: Variance does not randomly disperse around 0 so cannot really validate variance.
+
+Assumptions cannot be fully validated, however, to respond properly to the question we will continue
+
+(4)
+P-Value = P(F >= 1347) = [(<2e-16) < 0.05 (significance level)]
+
+Because our p-value is small (<5%), we can conclude that at least one mean electric range is different than the others.
