@@ -1,6 +1,5 @@
-
-
 ```{r}
+#Getting and tidying the electric vehicle data frame
 library(tidyverse) 
 library(RCurl)
 library(emmeans)
@@ -13,9 +12,82 @@ e_clean <- electric %>%
            "Battery Electric Vehicle (BEV)") %>%
   filter(Clean.Alternative.Fuel.Vehicle..CAFV..Eligibility == 
            "Clean Alternative Fuel Vehicle Eligible")
-  
-
-
-
-
 ```
+
+```{r}
+#Getting the mean for every Make of EV
+#Load in Packages
+library(ggplot2)
+library(esquisse)
+library(rvest)
+#Getting only the Make and Electric Range
+Electric_MakeRange <- e_clean %>%
+  select(Make, Electric.Range) %>%
+
+#Make Separate Data Sheets based on Vehicle Make (Does NOT Exist for all Makes)
+Tesla_Range <- Electric_MakeRange %>%
+  filter(Make == 'TESLA')
+
+Nissan_Range <- Electric_MakeRange %>%
+  filter(Make == 'NISSAN')
+
+Chevy_Range <- Electric_MakeRange %>%
+  filter(Make == 'CHEVROLET')
+
+Kia_Range <- Electric_MakeRange %>%
+  filter(Make == 'KIA')
+
+FIAT_Range <- Electric_MakeRange %>%
+  filter(Make == 'FIAT')
+
+Volkswagen_Range <- Electric_MakeRange %>%
+  filter(Make == 'VOLKSWAGEN')
+
+BMW_Range <- Electric_MakeRange %>%
+  filter(Make == 'BMW')
+
+Hyundai_Range <- Electric_MakeRange %>%
+  filter(Make == 'HYUNDAI')
+
+#Create a function that Gives the Average Range with the make table as an input
+MakeRange <- function(MakeRange){
+  MakeRange %>%
+    summarize(
+      Make = Make[1],
+      AvgRange = mean(Electric.Range, na.rm = TRUE))
+  
+}
+
+#Create a table that has each Make with its average Range displayed next to it
+RangeAvg <- MakeRange(Tesla_Range) %>%
+  full_join(MakeRange(Nissan_Range)) %>%
+  full_join(MakeRange(Chevy_Range)) %>%
+  full_join(MakeRange(Kia_Range)) %>%
+  full_join(MakeRange(FIAT_Range)) %>%
+  full_join(MakeRange(Volkswagen_Range)) %>%
+  full_join(MakeRange(BMW_Range)) %>%
+  full_join(MakeRange(Hyundai_Range))
+
+#Now Create a Graph for This data
+ggplot(
+  data = RangeAvg,
+  mapping = aes(
+    x = RangeAvg$Make,
+    y = RangeAvg$AvgRange,
+    fill = RangeAvg$Make
+  )
+) +
+  geom_col() +
+  labs(
+    x = 'Car Make',
+    y = 'Average Electric Range',
+    fill = 'Car Make',
+    title = 'Average Electric Range by Car Make'
+  ) +
+  scale_fill_manual(
+    values = c('#000000', '#FFF0F0', '#FA0F11', '#0FFC1A', '#A100F1', '#00FAFA', '#000AFA', '#FA11FC')
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
