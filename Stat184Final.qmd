@@ -22,7 +22,7 @@ library(esquisse)
 library(rvest)
 #Getting only the Make and Electric Range
 Electric_MakeRange <- e_clean %>%
-  select(Make, Electric.Range) %>%
+  select(Make, Electric.Range)
 
 #Make Separate Data Sheets based on Vehicle Make (Does NOT Exist for all Makes)
 Tesla_Range <- Electric_MakeRange %>%
