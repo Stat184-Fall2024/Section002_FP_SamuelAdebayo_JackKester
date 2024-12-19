@@ -1,14 +1,29 @@
 ---
 title: 'Exploring EV Data'
 author: Samuel Adebayo, Jack Kester
-output: pdf_document
+format: 
+  pdf:
+    toc: false
+    number-sections: false
+    colorlinks: true
+    code-fold: false
+    code-tools: false
+    echo: false
+    include: false
 ---
+
+# Introduction
+
+In this analysis, we will use a CSV file from data.gov to explore certain properties of electric vehicles (EV's). The main things that we will be looking at include Make, Model, and Electric Range (in Miles).
+
+It is important to note that some of the vehicles on this list are hybrid vehicles, meaning that they run on both electricity and gas. This detail will come up later on in the text.
 
 ```{r}
 #Getting and tidying the electric vehicle data frame
 library(tidyverse) 
 library(RCurl)
 library(emmeans)
+
 
 electric <- read.csv(text = getURL("https://raw.githubusercontent.com/Stat184-Fall2024/Section002_FP_SamuelAdebayo_JackKester/refs/heads/main/Electric_Vehicle_Population_Data.csv"))
 
@@ -20,12 +35,21 @@ e_clean <- electric %>%
            "Clean Alternative Fuel Vehicle Eligible")
 ```
 
+{{< pagebreak >}}
+
+### Question 1
+
+Research Question Q1: Is there any significant difference in vehicle range across manufacturers?
+
+To do this, I am simply going to make a histogram that shows each manufacturer along with their average range on their electric vehicles.
+
 ```{r}
 #Getting the mean for every Make of EV
 #Load in Packages
 library(ggplot2)
 library(esquisse)
 library(rvest)
+
 #Getting only the Make and Electric Range
 Electric_MakeRange <- e_clean %>%
   select(Make, Electric.Range)
@@ -73,14 +97,17 @@ RangeAvg <- MakeRange(Tesla_Range) %>%
   full_join(MakeRange(Volkswagen_Range)) %>%
   full_join(MakeRange(BMW_Range)) %>%
   full_join(MakeRange(Hyundai_Range))
+```
 
+```{r}
+#| include: true
 #Now Create a Graph for This data
 ggplot(
   data = RangeAvg,
   mapping = aes(
-    x = RangeAvg$Make,
-    y = RangeAvg$AvgRange,
-    fill = RangeAvg$Make
+    x = Make,
+    y = AvgRange,
+    fill = Make
   )
 ) +
   geom_col() +
@@ -96,13 +123,23 @@ ggplot(
   theme_bw() +
   theme(legend.position = "bottom")
 ```
-Research Questions:
-Q1: Is there a difference in average electric range between the Tesla models? 
 
+Response:
 
+Q1: Based on the histogram made for question 1, it is safe to assume that there is a vast difference between an EV's make and its range in miles.
+
+As seen in the graph, companies like Hyundai, Chevy, Tesla and KIA all make EV's that can comfortably drive over 150 miles on one charge, with the first 3 being capable of driving around 200 miles on one charge.
+
+As noted in the introduction there are hybrid vehicles in the data set, meaning that some of the values for manufacturers like BMW and Nissan have their averages dragged down due to that fact.
+
+{{< pagebreak >}}
+
+### Question 2
+
+Research Questions: Q2: Is there a difference in average electric range between the Tesla models?
 
 ```{r}
-
+#| include: true
 tesla <- e_clean[e_clean$Make == "TESLA",]
 
 boxplot(Electric.Range~Model, data = tesla)
@@ -120,25 +157,20 @@ qqline(rstandard(tesla_fit))
 
 
 ```
-Research Questions:
-Is there a difference in average electric range between the Tesla models? 
 
-Response:
+Research Questions: Is there a difference in average electric range between the Tesla models?
 
-Q1: Anova Hypothesis Test (At 5% sig level)
-(1) $H_0: \mu_1=\mu_2=\mu_3$
-$H_1: Some\ \mu_i \neq \mu_k$
+Q2: Anova Hypothesis Test (At 5% sig level) (1) $H_0: \mu_1=\mu_2=\mu_3$ $H_1: Some\ \mu_i \neq \mu_k$
 
-(2)
-```
+(2) 
+
+```         
                Df   Sum Sq Mean Sq F value Pr(>F)    
 Model           4  6903021 1725755    1347 <2e-16 ***
 Residuals   25299 32408761    1281 
 ```
 
-(3)
-Validate Assumptions
-Independence: Cars aren't randomly assigned Models because they are manufactured specifically as that model, however we can assume cars were randomly chosen to be tested so we can validate independence
+(3) Validate Assumptions Independence: Cars aren't randomly assigned Models because they are manufactured specifically as that model, however we can assume cars were randomly chosen to be tested so we can validate independence
 
 Normality: Normality tails off on the sides, however slightly follows a normal distribution
 
@@ -146,7 +178,12 @@ Constant Variance: Variance does not randomly disperse around 0 so cannot really
 
 Assumptions cannot be fully validated, however, to respond properly to the question we will continue
 
-(4)
-P-Value = P(F >= 1347) = [(<2e-16) < 0.05 (significance level)]
+(4) P-Value = P(F \>= 1347) = \[(\<2e-16) \< 0.05 (significance level)\]
 
-Because our p-value is small (<5%), we can conclude that at least one mean electric range is different than the others.
+Because our p-value is small (\<5%), we can conclude that at least one mean electric range is different than the others.
+
+{{< pagebreak >}}
+
+## Appendix
+
+Code sourced from: <https://catalog.data.gov/dataset/electric-vehicle-population-data>
